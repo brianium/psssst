@@ -69,4 +69,4 @@
          (filter needs-review?))))
 
 (defstate github :start (chan)
-                 :stop (close! chan))
+                 :stop (close! github))
