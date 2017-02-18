@@ -1,7 +1,8 @@
 (ns psssst.github
   (:require [clj-http.client :as client]
             [mount.core :refer [defstate]]
-            [clojure.core.async :refer [chan close!]]))
+            [clojure.core.async :refer [chan close!]]
+            [clojure.string :refer [split]]))
 
 (defonce api-url "https://api.github.com")
 
@@ -22,13 +23,6 @@
   [token org]
   (-> (str api-url "/orgs/" org "/repos")
       (str "?access_token=" token)))
-
-(defn list-pull-requests
-  "Given an Oauth token and a Repo record, fetch a set
-  of json records representing open pull requests"
-  [token repo]
-  (-> (pull-request-url token repo)
-      (client/get {:as :json})))
 
 (defn pr->map
   "Convert a pull request to a map"
@@ -51,17 +45,45 @@
   [pr]
   (nil? (:assignee pr)))
 
+(defn to-link
+  [header-val]
+  (->> (re-find #"<([^>]+)>; rel=\"(.*)\"" header-val)
+       (reverse)
+       (take 2)
+       (apply hash-map)))
+
+(defn get-next-url
+  [headers]
+  (when (contains? headers :link)
+    (->> (split (:link headers) #",")
+         (map to-link)
+         (apply merge)
+         (#(get %1 "next")))))
+
 (defn list-repos
   "List all repositories for the given organization"
   [token org]
-  (->> (client/get (repo-url token org) {:as :json})
-       :body
-       (map repo->Repo)))
+  (loop [url (repo-url token org)
+         responses []]
+    (let [response (client/get url {:as :json})
+          headers (:headers response)
+          next-url (get-next-url headers)]
+      (if next-url
+        (recur next-url (conj responses response))
+        (->> (mapcat :body (conj responses response))
+             (map repo->Repo))))))
+
+(defn list-pull-requests
+  "Given an Oauth token and a Repo record, fetch a set
+  of json records representing open pull requests"
+  [token repo]
+  (-> (pull-request-url token repo)
+      (client/get {:as :json})))
 
 (defn fetch-pull-requests
   "Given a collection of Repo records and an Oauth token, fetch all open pull requests
    that have not been assigned to someone"
-  [org token]
+  [token org]
   (let [repos (list-repos token org)]
     (->> (pmap (partial list-pull-requests token) repos)
          (mapcat :body)
