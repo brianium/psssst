@@ -5,10 +5,15 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :source-paths ["src"]
+
+  :main psssst.core
   
-  :dependencies [[clj-http "2.3.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/tools.cli "0.3.5"]
+                 [clj-http "2.3.0"]
                  [cheshire "5.7.0"]
                  [org.clojure/core.async "0.2.395"]
                  [mount "0.1.11"]]
 
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.8.0"]]}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:plugins [[lein-binplus "0.6.2"]]}})
