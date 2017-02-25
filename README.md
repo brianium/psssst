@@ -1,4 +1,4 @@
-# psssst
+# psssst [![Build Status](https://travis-ci.org/brianium/psssst.svg?branch=master)](https://travis-ci.org/brianium/psssst)
 
 A command line application to keep your team abreast of open pull requests that need review. Currently communicates only via slack.
 

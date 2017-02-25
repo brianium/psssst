@@ -1,4 +1,4 @@
-(defproject psssst "0.1.0-SNAPSHOT"
+(defproject psssst "1.0.0"
   :description "Notify your team that code needs review"
   :url "http://github.com/brianium/psssst"
   :license {:name "Eclipse Public License"
