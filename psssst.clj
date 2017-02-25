@@ -1,6 +1,6 @@
 {:github-token "github-token"
  :slack-token "slack-token"
- :interval 600
+ :interval 3600
  :org "netrivet"
  :users {"brianium" "brian"
          "jaredh159" "jared"

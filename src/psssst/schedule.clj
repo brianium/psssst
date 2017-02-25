@@ -12,6 +12,6 @@
   The function will be called with the configuration passed to schedule.
   
   The default interval is 600 seconds - or every 10 minutes"
-  [fn {:keys [interval] :or {interval 600} :as config}]
+  [fn {:keys [interval] :or {interval 3600} :as config}]
   (.scheduleAtFixedRate executor
     (partial fn config) 0 interval TimeUnit/SECONDS))
