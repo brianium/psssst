@@ -1,12 +1,15 @@
 (ns psssst.message)
 
 (defn message
-  [pr config]
+  [pr {:keys [slack-token icon-emoji username]
+       :or {icon-emoji ":robot_face:" username "Psssst"}}]
   (fn [[github-login slack-name]]
     {:channel (str "@" slack-name)
      :text (str (:url pr) " needs review")
      :author (:user pr)
-     :token (:slack-token config)}))
+     :token slack-token
+     :icon_emoji icon-emoji
+     :username username}))
 
 (defn not-author?
   [users message]

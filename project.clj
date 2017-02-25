@@ -16,4 +16,7 @@
                  [mount "0.1.11"]]
 
   :profiles {:uberjar {:aot :all}
-             :dev {:plugins [[lein-binplus "0.6.2"]]}})
+             :dev {:plugins [[lein-binplus "0.6.2"]
+                             [com.jakemccrary/lein-test-refresh "0.18.1"]]}}
+
+  :bin {:name "psssst"})

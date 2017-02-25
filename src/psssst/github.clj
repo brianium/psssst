@@ -28,7 +28,7 @@
   "Convert a pull request to a map"
   [raw-pr]
   (-> {}
-      (assoc :url (get raw-pr :url))
+      (assoc :url (get raw-pr :html_url))
       (assoc :assignee (get-in raw-pr [:assignee :login]))
       (assoc :user (get-in raw-pr [:user :login]))))
 
@@ -46,6 +46,7 @@
   (nil? (:assignee pr)))
 
 (defn to-link
+  "Converts a github link header to a map"
   [header-val]
   (->> (re-find #"<([^>]+)>; rel=\"(.*)\"" header-val)
        (reverse)
@@ -53,6 +54,7 @@
        (apply hash-map)))
 
 (defn get-next-url
+  "Get the url for the next set or recrods if available"
   [headers]
   (when (contains? headers :link)
     (->> (split (:link headers) #",")
